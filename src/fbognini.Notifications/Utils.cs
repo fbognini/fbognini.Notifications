@@ -28,7 +28,7 @@ namespace fbognini.Notifications
                 IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schema}' AND  TABLE_NAME = 'EmailConfigs'))
                 BEGIN
                     CREATE TABLE [notification].[EmailConfigs](
-	                    [Id] [nvarchar](8) NOT NULL,
+	                    [Id] [nvarchar](50) NOT NULL,
 	                    [UseSsl] [bit] NOT NULL,
 	                    [SmtpHost] [nvarchar](100) NOT NULL,
 	                    [SmtpPort] [int] NOT NULL,
@@ -73,7 +73,7 @@ namespace fbognini.Notifications
             connection.Execute(ensure, new { id });
         }
 
-        public static EmailSettings GetEmailSettings(string id, string connectionString, string schema = "notification")
+        public static EmailConfig GetEmailSettings(string id, string connectionString, string schema = "notification")
         {
             using var connection = new SqlConnection(connectionString);
             try
@@ -84,16 +84,16 @@ namespace fbognini.Notifications
                 EnsureTable(connection, schema);
                 EnsureConfiguration(connection, schema, id);
 
-                var query = @"SELECT [UseSsl]
+                var query = $@"SELECT [UseSsl]
                                     ,[SmtpHost]
                                     ,[SmtpPort]
                                     ,[UseAuthentication]
                                     ,[SmtpUsername]
                                     ,[SmtpPassword]
                                     ,[FromEmail]
-                                FROM [notification].[EmailConfigs]
+                                FROM [{schema}].[EmailConfigs]
                                 WHERE Id = @id";
-                var settings = connection.Query<EmailSettings>(query, new { id });
+                var settings = connection.Query<EmailConfig>(query, new { id });
                 if (settings.Count() != 1)
                     throw new Exception($"{settings.Count()} email configurations founded!");
 

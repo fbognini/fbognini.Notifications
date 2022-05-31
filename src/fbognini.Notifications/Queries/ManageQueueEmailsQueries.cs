@@ -23,29 +23,25 @@ namespace fbognini.Notifications.Queries
 
         public int InsertQueueEmails(List<Email> emails)
         {
-            using (var connection = new SqlConnection(connectionString))
+            using var connection = new SqlConnection(connectionString);
+            connection.Open();
+
+            var query = $"INSERT INTO {Table} ([To], Cc, Bcc, Subject, Body, IsHtml, Attachments, InsertionDate, Processing) VALUES (@To, @Cc, @Bcc, @Subject, @Body, @IsHtml, @Attachments, @InsertionDate, @Processing)";
+
+            var queryparams = emails.Select(x => new
             {
-                connection.Open();
-                
-                var query = $"INSERT INTO {Table} ([To], Cc, Bcc, Subject, Body, IsHtml, Attachments, InsertionDate, Processing) VALUES (@To, @Cc, @Bcc, @Subject, @Body, @IsHtml, @Attachments, @InsertionDate, @Processing)";
+                x.To,
+                x.Cc,
+                x.Bcc,
+                x.Subject,
+                x.Body,
+                x.IsHtml,
+                x.Attachments,
+                x.InsertionDate,
+                x.Processing
+            }).ToList();
 
-                var queryparams = emails.Select(x => new
-                {
-                    x.To,
-                    x.Cc,
-                    x.Bcc,
-                    x.Subject,
-                    x.Body,
-                    x.IsHtml,
-                    x.Attachments,
-                    x.InsertionDate,
-                    x.Processing
-                }).ToList();
-
-                return connection.Execute(query, queryparams);
-            }
-        }
-
-        
+            return connection.Execute(query, queryparams);
+        }        
     }
 }

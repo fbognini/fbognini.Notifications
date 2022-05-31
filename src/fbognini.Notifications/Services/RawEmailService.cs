@@ -12,12 +12,18 @@ using System;
 
 namespace fbognini.Notifications.Services
 {
-    internal class EmailService : BaseEmailService, IEmailService
+    internal class MultiEmailService : BaseEmailService, IMultiEmailService
     {
-        public EmailService(ITemplateService templateService, DatabaseSettings settings)
-            : base(templateService, settings.Id, settings.ConnectionString, settings.Schema)
+        internal MultiEmailService(ITemplateService templateService) : base(templateService)
         {
+        }
 
+        public void LoadConnectionString(string connectionString, string schema)
+        {
+            ConnectionString = connectionString;
+            Schema = schema;
+
+            LoadQueueQueries();
         }
     }
 }
