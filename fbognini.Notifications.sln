@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A70D62BA-CDE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications", "src\fbognini.Notifications\fbognini.Notifications.csproj", "{828551C1-CB3D-4032-B596-7BC3F814F7A2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications.MTarget", "src\fbognini.Notifications.MTarget\fbognini.Notifications.MTarget.csproj", "{2466E5A9-CA7D-4659-B799-02C00DD44DE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +19,17 @@ Global
 		{828551C1-CB3D-4032-B596-7BC3F814F7A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{828551C1-CB3D-4032-B596-7BC3F814F7A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{828551C1-CB3D-4032-B596-7BC3F814F7A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{828551C1-CB3D-4032-B596-7BC3F814F7A2} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
+		{2466E5A9-CA7D-4659-B799-02C00DD44DE4} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DD97CDD4-F62D-451F-BBB9-E82EADB17D24}

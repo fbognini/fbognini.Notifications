@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using fbognini.Notifications.Models;
 using fbognini.Notifications.Queries;
 using fbognini.Notifications.Services;
 using fbognini.Notifications.Settings;
@@ -22,7 +23,7 @@ namespace fbognini.Notifications
             connection.Execute(ensure);
         }
 
-        private static void EnsureTable(SqlConnection connection, string schema)
+        private static void EnsureEmailTable(SqlConnection connection, string schema)
         {
             var ensure = $@"
                 IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schema}' AND  TABLE_NAME = 'EmailConfigs'))
@@ -43,7 +44,25 @@ namespace fbognini.Notifications
             connection.Execute(ensure);
         }
 
-        private static void EnsureConfiguration(SqlConnection connection, string schema, string id)
+        private static void EnsureSmsTable(SqlConnection connection, string schema)
+        {
+            var ensure = $@"
+                IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schema}' AND  TABLE_NAME = 'SmsConfigs'))
+                BEGIN
+                    CREATE TABLE [notification].[SmsConfigs](
+	                    [Id] [nvarchar](50) NOT NULL,
+	                    [Username] [nvarchar](100) NULL,
+	                    [Password] [nvarchar](100) NULL,
+	                    [Sender] [nvarchar](100) NULL,
+	                    [ServiceId] [nvarchar](100) NULL
+                    ) ON [PRIMARY]
+                END
+                ";
+
+            connection.Execute(ensure);
+        }
+
+        private static void EnsureEmailConfiguration(SqlConnection connection, string schema, string id)
         {
             var ensure = $@"
                 IF (NOT EXISTS (SELECT * FROM [{schema}].[EmailConfigs] WHERE Id = @id))
@@ -73,6 +92,30 @@ namespace fbognini.Notifications
             connection.Execute(ensure, new { id });
         }
 
+        private static void EnsureSmsConfiguration(SqlConnection connection, string schema, string id)
+        {
+            var ensure = $@"
+                IF (NOT EXISTS (SELECT * FROM [{schema}].[SmsConfigs] WHERE Id = @id))
+                BEGIN
+                    
+                    INSERT INTO [{schema}].[SmsConfigs]
+                               ([Id]
+                               ,[Username]
+                               ,[Password]
+                               ,[Sender]
+                               ,[ServiceId])
+                         VALUES
+                               (@id
+                               ,''
+                               ,''
+                               ,''
+                               ,'')
+                END
+                ";
+
+            connection.Execute(ensure, new { id });
+        }
+
         public static EmailConfig GetEmailSettings(string id, string connectionString, string schema = "notification")
         {
             using var connection = new SqlConnection(connectionString);
@@ -81,8 +124,8 @@ namespace fbognini.Notifications
                 connection.Open();
 
                 EnsureSchema(connection, schema);
-                EnsureTable(connection, schema);
-                EnsureConfiguration(connection, schema, id);
+                EnsureEmailTable(connection, schema);
+                EnsureEmailConfiguration(connection, schema, id);
 
                 var query = $@"SELECT [UseSsl]
                                     ,[SmtpHost]
@@ -96,6 +139,37 @@ namespace fbognini.Notifications
                 var settings = connection.Query<EmailConfig>(query, new { id });
                 if (settings.Count() != 1)
                     throw new Exception($"{settings.Count()} email configurations founded!");
+
+                connection.Close();
+                return settings.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                connection.Close();
+                throw;
+            }
+        }
+
+        public static SmsConfig GetSmsSettings(string id, string connectionString, string schema = "notification")
+        {
+            using var connection = new SqlConnection(connectionString);
+            try
+            {
+                connection.Open();
+
+                EnsureSchema(connection, schema);
+                EnsureSmsTable(connection, schema);
+                EnsureSmsConfiguration(connection, schema, id);
+
+                var query = $@"SELECT [Username]
+                                    ,[Password]
+                                    ,[Sender]
+                                    ,[ServiceId]
+                                FROM [{schema}].[SmsConfigs]
+                                WHERE Id = @id";
+                var settings = connection.Query<SmsConfig>(query, new { id });
+                if (settings.Count() != 1)
+                    throw new Exception($"{settings.Count()} sms configurations founded!");
 
                 connection.Close();
                 return settings.FirstOrDefault();
