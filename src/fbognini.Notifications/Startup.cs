@@ -8,16 +8,24 @@ namespace fbognini.Notifications
 {
     public static class Startup
     {
-        public static IServiceCollection AddEmailService(this IServiceCollection services, Action<DatabaseSettings>  action)
+        public static NotificationsBuilder AddNotifications(this IServiceCollection services, Action<DatabaseSettings> action)
         {
             DatabaseSettings settings = new DatabaseSettings();
             action.Invoke(settings);
 
-            return services
-                .AddSingleton(settings)
+            var builder = new NotificationsBuilder(services)
+                .AddDatabaseSettings(settings);
+
+            return builder;
+        }
+
+        public static NotificationsBuilder AddEmailService(this NotificationsBuilder builder)
+        {
+            builder.Services
                 .AddTransient<ITemplateService, TemplateService>()
-                .AddTransient<IEmailService, EmailService>()
-                ;
+                .AddTransient<IEmailService, EmailService>();
+
+            return builder;
         }
     }
 }

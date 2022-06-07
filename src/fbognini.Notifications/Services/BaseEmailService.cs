@@ -12,33 +12,24 @@ using System;
 
 namespace fbognini.Notifications.Services
 {
-    public abstract class BaseEmailService: IEmailService
+    public abstract class BaseEmailService: NotificationService, IEmailService
     {
         private readonly ITemplateService templateService;
-
-        protected string Id { get; set; }
-        protected string ConnectionString { get; set; }
-        protected string Schema { get; set; }
 
         private EmailConfig Settings { get; set; }
         private ManageQueueEmailsQueries QueueQueries { get; set; }
 
         internal BaseEmailService(ITemplateService templateService)
+            : this(templateService, null, null, null)
         {
-            this.templateService = templateService;
         }
 
         internal BaseEmailService(ITemplateService templateService, string id, string connectionString, string schema)
-            : this(templateService)
+            : base(id, connectionString, schema)
         {
-            ConnectionString = connectionString;
-            Schema = schema;
-            LoadQueueQueries();
+            this.templateService = templateService;
 
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                ChangeId(id);
-            }
+            LoadQueueQueries();
         }
 
         protected void LoadQueueQueries()
@@ -46,15 +37,9 @@ namespace fbognini.Notifications.Services
             QueueQueries = new ManageQueueEmailsQueries(ConnectionString, Schema);
         }
 
-        protected void LoadEmailSettings()
+        protected override void LoadSettings()
         {
             Settings = Utils.GetEmailSettings(Id, ConnectionString, Schema);
-        }
-
-        public void ChangeId(string id)
-        {
-            Id = id;
-            LoadEmailSettings();
         }
 
         public void Send(string to, string subject, string message, bool isHtml = false)

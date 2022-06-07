@@ -1,49 +1,38 @@
 ﻿using fbognini.Notifications.Interfaces;
 using fbognini.Notifications.Models;
 using fbognini.Notifications.Models.Sms;
+using fbognini.Notifications.Services;
+using fbognini.Notifications.Settings;
 using MTarget;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace fbognini.Notifications.MTarget.Services
 {
-    public class MTargetService : ISmsService
+    public class MTargetService : BaseSmsService
     {
-        protected string Id { get; set; }
-        protected string ConnectionString { get; set; }
-        protected string Schema { get; set; }
-
-        internal SmsConfig Settings { get; set; }
-
-        internal MTargetService(string id, string connectionString, string schema)
+        public MTargetService(DatabaseSettings settings)
+            : this(null, settings)
         {
-            ConnectionString = connectionString;
-            Schema = schema;
-
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                ChangeId(id);
-            }
         }
 
-        protected void LoadSmsSettings()
+
+        public MTargetService(string id, DatabaseSettings settings)
+            : base(id, settings.ConnectionString, settings.Schema)
         {
-            Settings = Utils.GetSmsSettings(Id, ConnectionString, Schema);
         }
 
-        public void ChangeId(string id)
+        public override async Task<SmsResult> SendSms(string message, string phoneNumber)
         {
-            Id = id;
-            LoadSmsSettings();
+            return await SendSmss(message, new List<string> { phoneNumber });
         }
 
-        public async Task<SmsResult> SendSms(string message, string phoneNumber)
+        public override async Task<SmsResult> SendSmss(string message, List<string> phoneNumbers)
         {
-            return await this.SendSmss(message, new List<string> { phoneNumber });
-        }
+            if (Settings == null)
+                throw new NotImplementedException("Settings are not configured");
 
-        public async Task<SmsResult> SendSmss(string message, List<string> phoneNumbers)
-        {
             var client = new WSApiSmsClient();
             var mapEntry = new mapEntry[] { new mapEntry { key = "sender", value = Settings.Sender }, new mapEntry { key = "serviceid", value = Settings.ServiceId } };
             var response = await client.sendSMSAsync(Settings.Username, Settings.Password, phoneNumbers.ToArray(), message, mapEntry);

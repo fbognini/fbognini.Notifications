@@ -12,10 +12,10 @@ using System;
 
 namespace fbognini.Notifications.Services
 {
-    internal class EmailService : BaseEmailService, IEmailService
+    internal class EmailService : BaseEmailService
     {
         public EmailService(ITemplateService templateService, DatabaseSettings settings)
-            : base(templateService, settings.Id, settings.ConnectionString, settings.Schema)
+            : base(templateService, null, settings.ConnectionString, settings.Schema)
         {
 
         }

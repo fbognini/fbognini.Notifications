@@ -9,15 +9,20 @@ namespace fbognini.Notifications.MTarget
 {
     public static class Startup
     {
-        public static IServiceCollection AddMTargetService(this IServiceCollection services, Action<DatabaseSettings>  action)
+        public static NotificationsBuilder AddMTargetService(this NotificationsBuilder builder)
         {
-            DatabaseSettings settings = new DatabaseSettings();
-            action.Invoke(settings);
+            builder.Services
+                .AddTransient<ISmsService, MTargetService>();
 
-            return services
-                .AddSingleton(settings)
-                .AddTransient<ISmsService, MTargetService>()
-                ;
+            return builder;
+        }
+
+        public static NotificationsBuilder AddMTargetService(this NotificationsBuilder builder, string id)
+        {
+            builder.Services
+                .AddTransient<ISmsService, MTargetService>((provider) => new MTargetService(id, provider.GetRequiredService<DatabaseSettings>()));
+
+            return builder;
         }
     }
 }
