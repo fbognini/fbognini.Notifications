@@ -15,5 +15,6 @@ namespace fbognini.Notifications.Interfaces
         void Send(string to, string cc, string bcc, string subject, string message, bool isHtml = false, List<string> attachments = null);
         void Schedule(List<Email> emails);
         EmailTemplate GetTemplate(string name);
+        EmailTemplate GetTemplateById(string id);
     }
 }

@@ -15,7 +15,13 @@ namespace fbognini.Notifications.Services
     internal class EmailService : BaseEmailService
     {
         public EmailService(ITemplateService templateService, DatabaseSettings settings)
-            : base(templateService, null, settings.ConnectionString, settings.Schema)
+            : this(templateService, null, settings)
+        {
+
+        }
+
+        public EmailService(ITemplateService templateService, string id, DatabaseSettings settings)
+            : base(templateService, id, settings.ConnectionString, settings.Schema)
         {
 
         }

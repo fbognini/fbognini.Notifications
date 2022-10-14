@@ -8,5 +8,6 @@ namespace fbognini.Notifications.Interfaces
     {
         void LoadConfiguration(string connectionString, string schema);
         EmailTemplate GetTemplate(string name);
+        EmailTemplate GetTemplateById(string id);
     }
 }

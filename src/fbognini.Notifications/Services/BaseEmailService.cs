@@ -119,6 +119,12 @@ namespace fbognini.Notifications.Services
             return templateService.GetTemplate(name);
         }
 
+        public EmailTemplate GetTemplateById(string id)
+        {
+            templateService.LoadConfiguration(ConnectionString, Schema);
+            return templateService.GetTemplateById(id);
+        }
+
 
     }
 

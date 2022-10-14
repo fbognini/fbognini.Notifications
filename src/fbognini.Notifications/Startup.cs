@@ -19,11 +19,21 @@ namespace fbognini.Notifications
             return builder;
         }
 
+        private static IServiceCollection AddBase(this NotificationsBuilder builder) => builder.Services
+                .AddTransient<ITemplateService, TemplateService>();
+
         public static NotificationsBuilder AddEmailService(this NotificationsBuilder builder)
         {
-            builder.Services
-                .AddTransient<ITemplateService, TemplateService>()
+            builder.AddBase()
                 .AddTransient<IEmailService, EmailService>();
+
+            return builder;
+        }
+
+        public static NotificationsBuilder AddEmailService(this NotificationsBuilder builder, string id)
+        {
+            builder.AddBase()
+                .AddTransient<IEmailService, EmailService>((provider) => new EmailService(provider.GetRequiredService<ITemplateService>(), id, provider.GetRequiredService<DatabaseSettings>()));
 
             return builder;
         }

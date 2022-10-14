@@ -34,6 +34,21 @@ namespace fbognini.Notifications.Services
 
             return connection.QueryFirstOrDefault<EmailTemplate>(query, new { name });
         }
+        
+        public EmailTemplate GetTemplateById(string id)
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            var query = @$"SELECT [Id]
+                              ,[Name]
+                              ,[Subject]
+                              ,[Body]
+                        FROM [{Schema}].[EmailTemplates]
+                        WHERE Id = @Id";
+
+            return connection.QueryFirstOrDefault<EmailTemplate>(query, new { id });
+        }
 
     }
 }
