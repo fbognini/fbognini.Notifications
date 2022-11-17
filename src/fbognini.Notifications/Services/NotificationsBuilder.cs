@@ -9,16 +9,14 @@ namespace fbognini.Notifications.Services
     public class NotificationsBuilder
     {
         public IServiceCollection Services { get; set; }
-        internal DatabaseSettings DatabaseSettings { get; set; }
 
-        public NotificationsBuilder(IServiceCollection services)
+        internal NotificationsBuilder(IServiceCollection services)
         {
             Services = services;
         }
 
         internal NotificationsBuilder AddDatabaseSettings(DatabaseSettings settings)
         {
-            DatabaseSettings = settings;
             Services.AddSingleton(settings);
 
             return this;
