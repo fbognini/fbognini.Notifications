@@ -24,5 +24,21 @@ namespace fbognini.Notifications.MTarget
 
             return builder;
         }
+
+        public static NotificationsBuilder AddMTargetPrivateService(this NotificationsBuilder builder)
+        {
+            builder.Services
+                .AddTransient<ISmsService, MTargetPrivateService>();
+
+            return builder;
+        }
+
+        public static NotificationsBuilder AddMTargetPrivateService(this NotificationsBuilder builder, string id)
+        {
+            builder.Services
+                .AddTransient<ISmsService, MTargetPrivateService>((provider) => new MTargetPrivateService(id, provider.GetRequiredService<DatabaseSettings>()));
+
+            return builder;
+        }
     }
 }
