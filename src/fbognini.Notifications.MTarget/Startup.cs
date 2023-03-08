@@ -1,4 +1,5 @@
 ﻿using fbognini.Notifications.Interfaces;
+using fbognini.Notifications.MTarget.Sdk;
 using fbognini.Notifications.MTarget.Services;
 using fbognini.Notifications.Services;
 using fbognini.Notifications.Settings;
@@ -12,31 +13,20 @@ namespace fbognini.Notifications.MTarget
         public static NotificationsBuilder AddMTargetService(this NotificationsBuilder builder)
         {
             builder.Services
-                .AddTransient<ISmsService, MTargetService>();
+                .AddTransient<ISmsService, MTargetSmsService>();
 
             return builder;
         }
 
         public static NotificationsBuilder AddMTargetService(this NotificationsBuilder builder, string id)
         {
+            builder.Services.AddHttpClient<IMTargetService, MTargetService>((sp, cl) =>
+            {
+
+            });
+
             builder.Services
-                .AddTransient<ISmsService, MTargetService>((provider) => new MTargetService(id, provider.GetRequiredService<DatabaseSettings>()));
-
-            return builder;
-        }
-
-        public static NotificationsBuilder AddMTargetPrivateService(this NotificationsBuilder builder)
-        {
-            builder.Services
-                .AddTransient<ISmsService, MTargetPrivateService>();
-
-            return builder;
-        }
-
-        public static NotificationsBuilder AddMTargetPrivateService(this NotificationsBuilder builder, string id)
-        {
-            builder.Services
-                .AddTransient<ISmsService, MTargetPrivateService>((provider) => new MTargetPrivateService(id, provider.GetRequiredService<DatabaseSettings>()));
+                .AddTransient<ISmsService, MTargetSmsService>((provider) => new MTargetSmsService(id, provider.GetRequiredService<DatabaseSettings>(), provider.GetRequiredService<IMTargetService>()));
 
             return builder;
         }

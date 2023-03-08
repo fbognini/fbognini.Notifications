@@ -1,28 +1,30 @@
 ﻿using fbognini.Notifications.Interfaces;
 using fbognini.Notifications.Models;
 using fbognini.Notifications.Models.Sms;
+using fbognini.Notifications.MTarget.Sdk;
 using fbognini.Notifications.Services;
 using fbognini.Notifications.Settings;
-using MTarget;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace fbognini.Notifications.MTarget.Services
 {
-    public abstract class BaseMTargetService : BaseSmsService
+    public class MTargetSmsService : BaseSmsService
     {
-        public abstract string RemoteAddress { get; }
+        private readonly IMTargetService mTargetService;
 
-        public BaseMTargetService(DatabaseSettings settings)
-            : this(null, settings)
+        public MTargetSmsService(DatabaseSettings settings, IMTargetService mTargetService)
+            : this(null, settings, mTargetService)
         {
         }
 
 
-        public BaseMTargetService(string id, DatabaseSettings settings)
+        public MTargetSmsService(string id, DatabaseSettings settings, IMTargetService mTargetService)
             : base(id, settings.ConnectionString, settings.Schema)
         {
+            this.mTargetService = mTargetService;
         }
 
         public override async Task<SmsResult> SendSms(string message, string phoneNumber)
@@ -35,10 +37,10 @@ namespace fbognini.Notifications.MTarget.Services
             if (Settings == null)
                 throw new NotImplementedException("Settings are not configured");
 
-            var client = new WSApiSmsClient(WSApiSmsClient.EndpointConfiguration.WSApiSmsPort, RemoteAddress);
-            var mapEntry = new mapEntry[] { new mapEntry { key = "sender", value = Settings.Sender }, new mapEntry { key = "serviceid", value = Settings.ServiceId } };
-            var response = await client.sendSMSAsync(Settings.Username, Settings.Password, phoneNumbers.ToArray(), message, mapEntry);
-            return new SmsResult(response.@return[0].resultcode != -1, response.@return[0].reason);
+
+            var response = await mTargetService.SendMessages(phoneNumbers, message);
+            var result = response.Results.First();
+            return new SmsResult(result.Code != "-1", result.Reason);
         }
     }
 }
