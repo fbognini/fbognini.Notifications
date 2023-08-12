@@ -25,6 +25,12 @@ namespace fbognini.Notifications.MTarget.Services
             : base(id, settings.ConnectionString, settings.Schema)
         {
             this.mTargetService = mTargetService;
+            this.mTargetService.ChangeSettings(new MTargetSettings()
+            {
+                Username = Settings.Username,
+                Password = Settings.Password,
+                Sender = Settings.Sender
+            });
         }
 
         public override async Task<SmsResult> SendSms(string message, string phoneNumber)
