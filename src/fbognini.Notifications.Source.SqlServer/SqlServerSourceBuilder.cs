@@ -19,7 +19,7 @@ namespace fbognini.Notifications.Source.SqlServer
 
         internal SqlServerSourceBuilder AddSettingsProvider(DatabaseSettings settings)
         {
-            Services.AddScoped<ISettingsProvider, SqlServerSettingsProvider>((provider) => new SqlServerSettingsProvider(settings));
+            Services.AddSingleton<ISettingsProvider, SqlServerSettingsProvider>((provider) => new SqlServerSettingsProvider(settings));
 
             return this;
         }

@@ -19,7 +19,7 @@ namespace fbognini.Notifications.Source.AppSettings
 
         internal AppSettingsSourceBuilder AddSettingsProvider(Settings.AppSettings settings)
         {
-            Services.AddScoped<ISettingsProvider, AppSettingsSettingsProvider>((provider) => new AppSettingsSettingsProvider(settings));
+            Services.AddSingleton<ISettingsProvider, AppSettingsSettingsProvider>((provider) => new AppSettingsSettingsProvider(settings));
 
             return this;
         }
