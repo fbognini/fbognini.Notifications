@@ -1,7 +1,7 @@
 ﻿using fbognini.Notifications.Interfaces;
 using fbognini.Notifications.Models;
 using fbognini.Notifications.Models.Sms;
-using fbognini.Notifications.MTarget.Sdk;
+using fbognini.Notifications.Sinks.MTarget.Sdk;
 using fbognini.Notifications.Services;
 using fbognini.Notifications.Settings;
 using System;
@@ -9,20 +9,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace fbognini.Notifications.MTarget.Services
+namespace fbognini.Notifications.Sinks.MTarget.Services
 {
     public class MTargetSmsService : BaseSmsService
     {
         private readonly IMTargetService mTargetService;
 
-        public MTargetSmsService(DatabaseSettings settings, IMTargetService mTargetService)
-            : this(null, settings, mTargetService)
+        public MTargetSmsService(ISettingsProvider settingsProvider, IMTargetService mTargetService)
+            : this(null, settingsProvider, mTargetService)
         {
         }
 
 
-        public MTargetSmsService(string id, DatabaseSettings settings, IMTargetService mTargetService)
-            : base(id, settings.ConnectionString, settings.Schema)
+        public MTargetSmsService(string id, ISettingsProvider settingsProvider, IMTargetService mTargetService)
+            : base(id, settingsProvider)
         {
             this.mTargetService = mTargetService;
             this.mTargetService.ChangeSettings(new MTargetSettings()

@@ -1,29 +1,31 @@
 ﻿using Dapper;
+using fbognini.Notifications.Interfaces;
 using fbognini.Notifications.Models;
+using fbognini.Notifications.Settings;
+using fbognini.Notifications.Source.SqlServer.Settings;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace fbognini.Notifications.Queries
+namespace fbognini.Notifications.Source.SqlServer
 {
-    public class ManageQueueEmailsQueries
+    internal class SqlServerEmailQueueService : IEmailQueueService
     {
-        private readonly string connectionString;
-        private readonly string schema;
+        private readonly DatabaseSettings settings;
 
-        public ManageQueueEmailsQueries(string connectionString, string schema)
+        public SqlServerEmailQueueService(DatabaseSettings settings)
         {
-            this.connectionString = connectionString;
-            this.schema = schema;
+            this.settings = settings;
         }
 
-        private string Table => $"[{schema}].[QueueEmails]";
+        private string Table => $"[{settings.Schema}].[QueueEmails]";
 
         public int InsertQueueEmails(List<Email> emails)
         {
-            using var connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(settings.ConnectionString);
             connection.Open();
 
             var query = $"INSERT INTO {Table} ([To], Cc, Bcc, Subject, Body, IsHtml, Attachments, InsertionDate, Processing) VALUES (@To, @Cc, @Bcc, @Subject, @Body, @IsHtml, @Attachments, @InsertionDate, @Processing)";
@@ -42,6 +44,6 @@ namespace fbognini.Notifications.Queries
             }).ToList();
 
             return connection.Execute(query, queryparams);
-        }        
+        }
     }
 }

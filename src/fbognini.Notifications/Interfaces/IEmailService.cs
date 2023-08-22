@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 namespace fbognini.Notifications.Interfaces
 {
-    public interface IMultiEmailService: IEmailService
-    {
-        void LoadConnectionString(string connectionString, string schema);
-    }
-
     public interface IEmailService: INotificationService
     {
         void Send(string to, string subject, string message, bool isHtml = false);

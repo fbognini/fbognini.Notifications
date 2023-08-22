@@ -1,29 +1,18 @@
 ﻿using fbognini.Notifications.Interfaces;
-using fbognini.Notifications.Settings;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
-using MimeKit.Text;
-using System.Linq;
-using System.Collections.Generic;
-using fbognini.Notifications.Models;
-using fbognini.Notifications.Queries;
-using System;
 
 namespace fbognini.Notifications.Services
 {
-    public abstract class NotificationService: INotificationService
+    public abstract class NotificationService : INotificationService
     {
+        protected readonly ISettingsProvider settingsProvider;
         protected string Id { get; set; }
-        protected string ConnectionString { get; set; }
-        protected string Schema { get; set; }
 
-        protected NotificationService(string id, string connectionString, string schema)
+        protected NotificationService(string id, ISettingsProvider settingsProvider)
         {
-            ConnectionString = connectionString;
-            Schema = schema;
+            this.Id = id;
+            this.settingsProvider = settingsProvider;
 
-            if (!string.IsNullOrWhiteSpace(id))
+            if (!string.IsNullOrEmpty(Id))
             {
                 ChangeId(id);
             }

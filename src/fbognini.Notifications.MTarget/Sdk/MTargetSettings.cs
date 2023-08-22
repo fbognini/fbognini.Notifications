@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fbognini.Notifications.MTarget.Sdk
+namespace fbognini.Notifications.Sinks.MTarget.Sdk
 {
     public enum MTargetEnvironment
     {

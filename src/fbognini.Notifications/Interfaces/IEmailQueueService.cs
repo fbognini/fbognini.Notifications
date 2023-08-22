@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 namespace fbognini.Notifications.Interfaces
 {
-    public interface ITemplateService
+    public interface IEmailQueueService
     {
-        EmailTemplate GetTemplate(string name);
-        EmailTemplate GetTemplateById(string id);
+        int InsertQueueEmails(List<Email> emails);
     }
 }

@@ -6,11 +6,13 @@ using System.Text;
 
 namespace fbognini.Notifications.Services
 {
-    public class NotificationsBuilder : SinkBuilder
+    public abstract class SinkBuilder
     {
-        internal NotificationsBuilder(IServiceCollection services)
-            :base(services)
+        public IServiceCollection Services { get; set; }
+
+        public SinkBuilder(IServiceCollection services)
         {
+            Services = services;
         }
     }
 }

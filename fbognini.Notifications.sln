@@ -7,7 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A70D62BA-CDE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications", "src\fbognini.Notifications\fbognini.Notifications.csproj", "{828551C1-CB3D-4032-B596-7BC3F814F7A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications.MTarget", "src\fbognini.Notifications.MTarget\fbognini.Notifications.MTarget.csproj", "{2466E5A9-CA7D-4659-B799-02C00DD44DE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications.Sinks.MTarget", "src\fbognini.Notifications.MTarget\fbognini.Notifications.Sinks.MTarget.csproj", "{2466E5A9-CA7D-4659-B799-02C00DD44DE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications.Sinks.Email", "src\fbognini.Notifications.Sinks.Email\fbognini.Notifications.Sinks.Email.csproj", "{B5B12F2C-096F-4BC6-8D37-883A22B0FB8A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications.Source.SqlServer", "src\fbognini.Notifications.Source.SqlServer\fbognini.Notifications.Source.SqlServer.csproj", "{4BCC196D-D952-495D-BA8A-D29458BB48BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fbognini.Notifications.Source.AppSettings", "src\fbognini.Notifications.Source.AppSettings\fbognini.Notifications.Source.AppSettings.csproj", "{760135E9-879B-4F6D-BA1D-B9A7D9E60AF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +29,18 @@ Global
 		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2466E5A9-CA7D-4659-B799-02C00DD44DE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5B12F2C-096F-4BC6-8D37-883A22B0FB8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B12F2C-096F-4BC6-8D37-883A22B0FB8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B12F2C-096F-4BC6-8D37-883A22B0FB8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B12F2C-096F-4BC6-8D37-883A22B0FB8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BCC196D-D952-495D-BA8A-D29458BB48BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BCC196D-D952-495D-BA8A-D29458BB48BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BCC196D-D952-495D-BA8A-D29458BB48BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BCC196D-D952-495D-BA8A-D29458BB48BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{760135E9-879B-4F6D-BA1D-B9A7D9E60AF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{760135E9-879B-4F6D-BA1D-B9A7D9E60AF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{760135E9-879B-4F6D-BA1D-B9A7D9E60AF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{760135E9-879B-4F6D-BA1D-B9A7D9E60AF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +48,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{828551C1-CB3D-4032-B596-7BC3F814F7A2} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
 		{2466E5A9-CA7D-4659-B799-02C00DD44DE4} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
+		{B5B12F2C-096F-4BC6-8D37-883A22B0FB8A} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
+		{4BCC196D-D952-495D-BA8A-D29458BB48BE} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
+		{760135E9-879B-4F6D-BA1D-B9A7D9E60AF5} = {A70D62BA-CDE1-42A0-A3A4-8012641BD6EB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DD97CDD4-F62D-451F-BBB9-E82EADB17D24}

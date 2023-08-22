@@ -1,16 +1,92 @@
 ﻿using Dapper;
+using fbognini.Notifications.Interfaces;
 using fbognini.Notifications.Models;
-using fbognini.Notifications.Queries;
-using fbognini.Notifications.Services;
 using fbognini.Notifications.Settings;
+using fbognini.Notifications.Source.SqlServer.Settings;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace fbognini.Notifications
+namespace fbognini.Notifications.Source.SqlServer
 {
-    public static class Utils
+    internal class SqlServerSettingsProvider : ISettingsProvider
     {
+        private readonly DatabaseSettings databaseSettings;
+
+        public SqlServerSettingsProvider(DatabaseSettings databaseSettings)
+        {
+            this.databaseSettings = databaseSettings;
+        }
+
+        public EmailConfig GetEmailSettings(string id)
+        {
+            using var connection = new SqlConnection(databaseSettings.ConnectionString);
+            try
+            {
+                connection.Open();
+
+                EnsureSchema(connection, databaseSettings.Schema);
+                EnsureEmailTable(connection, databaseSettings.Schema);
+                EnsureEmailConfiguration(connection, databaseSettings.Schema, id);
+
+                var query = $@"SELECT [UseSsl]
+                                    ,[SmtpHost]
+                                    ,[SmtpPort]
+                                    ,[UseAuthentication]
+                                    ,[SmtpUsername]
+                                    ,[SmtpPassword]
+                                    ,[FromEmail]
+                                FROM [{databaseSettings.Schema}].[EmailConfigs]
+                                WHERE Id = @id";
+                var settings = connection.Query<EmailConfig>(query, new { id });
+                if (settings.Count() != 1)
+                    throw new Exception($"{settings.Count()} email configurations founded!");
+
+                connection.Close();
+                return settings.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                connection.Close();
+                throw;
+            }
+        }
+
+        public SmsConfig GetSmsSettings(string id)
+        {
+            using var connection = new SqlConnection(databaseSettings.ConnectionString);
+            try
+            {
+                connection.Open();
+
+                EnsureSchema(connection, databaseSettings.Schema);
+                EnsureSmsTable(connection, databaseSettings.Schema);
+                EnsureSmsConfiguration(connection, databaseSettings.Schema, id);
+
+                var query = $@"SELECT [Username]
+                                    ,[Password]
+                                    ,[Sender]
+                                    ,[ServiceId]
+                                FROM [{databaseSettings.Schema}].[SmsConfigs]
+                                WHERE Id = @id";
+                var settings = connection.Query<SmsConfig>(query, new { id });
+                if (settings.Count() != 1)
+                    throw new Exception($"{settings.Count()} sms configurations founded!");
+
+                connection.Close();
+                return settings.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                connection.Close();
+                throw;
+            }
+
+        }
+
         private static void EnsureSchema(SqlConnection connection, string schema)
         {
             var ensure = $@"
@@ -114,71 +190,6 @@ namespace fbognini.Notifications
                 ";
 
             connection.Execute(ensure, new { id });
-        }
-
-        public static EmailConfig GetEmailSettings(string id, string connectionString, string schema = "notification")
-        {
-            using var connection = new SqlConnection(connectionString);
-            try
-            {
-                connection.Open();
-
-                EnsureSchema(connection, schema);
-                EnsureEmailTable(connection, schema);
-                EnsureEmailConfiguration(connection, schema, id);
-
-                var query = $@"SELECT [UseSsl]
-                                    ,[SmtpHost]
-                                    ,[SmtpPort]
-                                    ,[UseAuthentication]
-                                    ,[SmtpUsername]
-                                    ,[SmtpPassword]
-                                    ,[FromEmail]
-                                FROM [{schema}].[EmailConfigs]
-                                WHERE Id = @id";
-                var settings = connection.Query<EmailConfig>(query, new { id });
-                if (settings.Count() != 1)
-                    throw new Exception($"{settings.Count()} email configurations founded!");
-
-                connection.Close();
-                return settings.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                connection.Close();
-                throw;
-            }
-        }
-
-        public static SmsConfig GetSmsSettings(string id, string connectionString, string schema = "notification")
-        {
-            using var connection = new SqlConnection(connectionString);
-            try
-            {
-                connection.Open();
-
-                EnsureSchema(connection, schema);
-                EnsureSmsTable(connection, schema);
-                EnsureSmsConfiguration(connection, schema, id);
-
-                var query = $@"SELECT [Username]
-                                    ,[Password]
-                                    ,[Sender]
-                                    ,[ServiceId]
-                                FROM [{schema}].[SmsConfigs]
-                                WHERE Id = @id";
-                var settings = connection.Query<SmsConfig>(query, new { id });
-                if (settings.Count() != 1)
-                    throw new Exception($"{settings.Count()} sms configurations founded!");
-
-                connection.Close();
-                return settings.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                connection.Close();
-                throw;
-            }
         }
     }
 }

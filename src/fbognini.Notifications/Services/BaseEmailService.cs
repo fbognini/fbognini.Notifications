@@ -1,45 +1,37 @@
 ﻿using fbognini.Notifications.Interfaces;
+using fbognini.Notifications.Models;
 using fbognini.Notifications.Settings;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using MimeKit.Text;
-using System.Linq;
-using System.Collections.Generic;
-using fbognini.Notifications.Models;
-using fbognini.Notifications.Queries;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace fbognini.Notifications.Services
 {
-    public abstract class BaseEmailService: NotificationService, IEmailService
+    public abstract class BaseEmailService : NotificationService, IEmailService
     {
         private readonly ITemplateService templateService;
+        private readonly IEmailQueueService emailQueueService;
 
         private EmailConfig Settings { get; set; }
-        private ManageQueueEmailsQueries QueueQueries { get; set; }
 
-        internal BaseEmailService(ITemplateService templateService)
-            : this(templateService, null, null, null)
+        public BaseEmailService(ISettingsProvider settingsProvider, ITemplateService templateService, IEmailQueueService emailQueueService)
+            : this(settingsProvider, templateService, emailQueueService, null)
         {
         }
 
-        internal BaseEmailService(ITemplateService templateService, string id, string connectionString, string schema)
-            : base(id, connectionString, schema)
+        public BaseEmailService(ISettingsProvider settingsProvider, ITemplateService templateService, IEmailQueueService emailQueueService, string id)
+            : base(id, settingsProvider)
         {
             this.templateService = templateService;
-
-            LoadQueueQueries();
-        }
-
-        protected void LoadQueueQueries()
-        {
-            QueueQueries = new ManageQueueEmailsQueries(ConnectionString, Schema);
+            this.emailQueueService = emailQueueService;
         }
 
         protected override void LoadSettings()
         {
-            Settings = Utils.GetEmailSettings(Id, ConnectionString, Schema);
+            Settings = settingsProvider.GetEmailSettings(Id);
         }
 
         public void Send(string to, string subject, string message, bool isHtml = false)
@@ -105,27 +97,19 @@ namespace fbognini.Notifications.Services
             smtp.Disconnect(true);
         }
 
-        public void Schedule(List<Email> emails)
+        public void Schedule(List<Models.Email> emails)
         {
-            if (QueueQueries == null)
-                throw new NotImplementedException("Scheduling is not configured");
-
-            QueueQueries.InsertQueueEmails(emails);
+            emailQueueService.InsertQueueEmails(emails);
         }
 
         public EmailTemplate GetTemplate(string name)
         {
-            templateService.LoadConfiguration(ConnectionString, Schema);
             return templateService.GetTemplate(name);
         }
 
         public EmailTemplate GetTemplateById(string id)
         {
-            templateService.LoadConfiguration(ConnectionString, Schema);
             return templateService.GetTemplateById(id);
         }
-
-
     }
-
 }
