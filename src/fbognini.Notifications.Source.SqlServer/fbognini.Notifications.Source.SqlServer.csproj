@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	<TargetFrameworks>net7.0;net6.0</TargetFrameworks>
-	  <Version>2.0</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+		<Version>2.0</Version>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
@@ -18,12 +19,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.151" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-  </ItemGroup>
+		<PackageReference Include="Dapper" Version="2.0.151" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\fbognini.Notifications\fbognini.Notifications.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\fbognini.Notifications\fbognini.Notifications.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,21 +1,27 @@
 ﻿using fbognini.Notifications.Interfaces;
+using System;
 
 namespace fbognini.Notifications.Services
 {
     public abstract class NotificationService : INotificationService
     {
         protected readonly ISettingsProvider settingsProvider;
-        protected string Id { get; set; }
+        protected string? Id { get; set; }
+
+        protected NotificationService(ISettingsProvider settingsProvider)
+        {
+            this.settingsProvider = settingsProvider;
+        }
 
         protected NotificationService(string id, ISettingsProvider settingsProvider)
+            : this(settingsProvider)
         {
-            this.Id = id;
-            this.settingsProvider = settingsProvider;
-
-            if (!string.IsNullOrEmpty(Id))
+            if (string.IsNullOrEmpty(id))
             {
-                ChangeId(id);
+                throw new ArgumentException(nameof(id));
             }
+
+            ChangeId(id);
         }
 
         protected abstract void LoadSettings();

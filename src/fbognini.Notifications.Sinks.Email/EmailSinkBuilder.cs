@@ -20,7 +20,11 @@ namespace fbognini.Notifications.Sinks.Email
 
         internal EmailSinkBuilder AddEmailService(string id)
         {
-            Services.AddTransient<IEmailService, EmailService>((provider) => new EmailService(provider.GetRequiredService<ISettingsProvider>(), provider.GetRequiredService<ITemplateService>(), provider.GetRequiredService<IEmailQueueService>(), id));
+            Services.AddTransient<IEmailService, EmailService>((provider) => new EmailService(
+                provider.GetRequiredService<ISettingsProvider>(),
+                provider.GetRequiredService<ITemplateService>(),
+                provider.GetRequiredService<IEmailQueueService>(),
+                id));
 
             return this;
         }

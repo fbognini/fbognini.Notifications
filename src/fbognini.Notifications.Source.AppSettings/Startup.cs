@@ -6,15 +6,19 @@ namespace fbognini.Notifications.Source.AppSettings
 {
     public static class Startup
     {
-        public static AppSettingsSourceBuilder FromAppSettings(this SinkBuilder services, IConfiguration configuration)
+        public static AppSettingsSourceBuilder FromAppSettings(this SinkBuilder services, IConfiguration configuration, string sectionName = "fbognini.Notifications")
         {
-            var settings = configuration.GetSection("fbognini.Notifications").Get<Settings.AppSettings>()!;
+            if (string.IsNullOrWhiteSpace(sectionName))
+            {
+                throw new ArgumentNullException(nameof(sectionName));
+            }
+
+            var settings = configuration.GetSection(sectionName).Get<Settings.AppSettings>()!;
 
             var builder = new AppSettingsSourceBuilder(services.Services)
                 .AddSettingsProvider(settings)
                 .AddTemplateService(settings)
-                .AddEmailQueueService(settings)
-                ;
+                .AddEmailQueueService(settings);
 
             return builder;
         }
@@ -28,8 +32,7 @@ namespace fbognini.Notifications.Source.AppSettings
             var builder = new AppSettingsSourceBuilder(services.Services)
                 .AddSettingsProvider(settings)
                 .AddTemplateService(settings)
-                .AddEmailQueueService(settings)
-                ;
+                .AddEmailQueueService(settings);
 
             return builder;
         }

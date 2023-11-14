@@ -14,8 +14,7 @@ namespace fbognini.Notifications.Source.SqlServer
             var builder = new SqlServerSourceBuilder(services.Services)
                 .AddSettingsProvider(settings)
                 .AddTemplateService(settings)
-                .AddEmailQueueService(settings)
-                ;
+                .AddEmailQueueService(settings);
 
             return builder;
         }
