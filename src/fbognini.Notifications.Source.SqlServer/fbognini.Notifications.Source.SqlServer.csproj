@@ -1,16 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<PackageId>fbognini.Notifications</PackageId>
-		<TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+		<Version>2.0</Version>
 		<Nullable>enable</Nullable>
-		<Version>2.0.1</Version>
-		<Authors>Francesco Bognini</Authors>
-		<Company>Francesco Bognini</Company>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageProjectUrl>https://github.com/fbognini/fbognini.Notifications</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/fbognini/fbognini.Notifications</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0'">
@@ -26,8 +19,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
-		<None Include="..\..\README.md" Pack="true" PackagePath="" />
+		<PackageReference Include="Dapper" Version="2.0.151" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\fbognini.Notifications\fbognini.Notifications.csproj" />
 	</ItemGroup>
 
 </Project>

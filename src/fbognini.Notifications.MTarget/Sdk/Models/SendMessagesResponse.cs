@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace fbognini.Notifications.MTarget.Sdk.Models
+namespace fbognini.Notifications.Sinks.MTarget.Sdk.Models
 {
     public class SendMessagesResponse
     {

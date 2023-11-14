@@ -1,4 +1,4 @@
-﻿using fbognini.Notifications.MTarget.Sdk.Models;
+﻿using fbognini.Notifications.Sinks.MTarget.Sdk.Models;
 using fbognini.Sdk;
 using fbognini.Sdk.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace fbognini.Notifications.MTarget.Sdk
+namespace fbognini.Notifications.Sinks.MTarget.Sdk
 {
 
     public interface IMTargetService
