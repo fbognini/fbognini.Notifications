@@ -32,7 +32,7 @@ namespace fbognini.Notifications.Sinks.Email
                 return;
             }
 
-            ArgumentNullException.ThrowIfNull(nameof(Settings));
+            ArgumentNullException.ThrowIfNull(Settings);
 
             // send email
             using var smtp = new SmtpClient();
@@ -55,7 +55,7 @@ namespace fbognini.Notifications.Sinks.Email
                 return;
             }
 
-            ArgumentNullException.ThrowIfNull(nameof(Settings));
+            ArgumentNullException.ThrowIfNull(Settings);
 
             // send email
             using var smtp = new SmtpClient();
@@ -77,6 +77,10 @@ namespace fbognini.Notifications.Sinks.Email
 
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(Settings.FromEmail));
+            if (!string.IsNullOrWhiteSpace(Settings.ReplyToEmail))
+            {
+                email.ReplyTo.Add(MailboxAddress.Parse(Settings.ReplyToEmail));
+            }
 
             if (!string.IsNullOrWhiteSpace(to))
             {

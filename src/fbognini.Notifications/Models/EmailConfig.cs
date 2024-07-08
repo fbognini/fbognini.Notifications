@@ -9,5 +9,6 @@
         public string SmtpUsername { get; set; }
         public string SmtpPassword { get; set; }
         public string FromEmail { get; set; }
+        public string? ReplyToEmail { get; set; }
     }
 }

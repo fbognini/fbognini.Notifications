@@ -31,8 +31,8 @@ namespace fbognini.Notifications.Sinks.MTarget.Sdk
 
         private MTargetSettings settings;
 
-        public MTargetService(HttpClient client, ILogger<MTargetService> logger, IOptions<MTargetSettings> options)
-            : base(client, logger, options: MTargetUtils.JsonSerializerOptions)
+        public MTargetService(HttpClient client, IOptions<MTargetSettings> options)
+            : base(client, options: MTargetUtils.JsonSerializerOptions)
         {
             settings = options.Value;
             ChangeSettings(settings);
