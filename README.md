@@ -343,7 +343,21 @@ which is exactly why a new sink does not require a new version of your source.
 
 ## Upgrading from 2.x
 
-3.0 is a rewrite with no compatibility layer. What changed and why:
+3.0 is a rewrite with no compatibility layer.
+
+### The source packages were renamed
+
+`Source.` became `Sources.`, matching `Sinks.` which was already plural. These are new package ids, so
+**updating will not find them** — you have to change the reference:
+
+| 2.x package | 3.0 package |
+|---|---|
+| `fbognini.Notifications.Source.AppSettings` | `fbognini.Notifications.Sources.AppSettings` |
+| `fbognini.Notifications.Source.SqlServer` | `fbognini.Notifications.Sources.SqlServer` |
+
+The old ids stop at 2.0.0 and will be unlisted once 3.0 is stable. The sink packages kept their names.
+
+### What else changed, and why
 
 | 2.x | 3.0 |
 |---|---|
