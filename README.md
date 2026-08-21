@@ -1,7 +1,7 @@
 # fbognini.Notifications
 
 Multi-channel notifications for .NET, composed from independent packages: one per **sink** (a channel
-you send through) and one per **source** (where configuration, templates and the queue come from).
+you send through) and one per **source** (where configuration comes from).
 
 Adding a channel is a new package. It does not require a change to the core, which is the whole point.
 
@@ -34,7 +34,7 @@ Targets `net8.0` and `net10.0`.
 | `fbognini.Notifications.Sinks.Telegram` | Telegram Bot API |
 | `fbognini.Notifications.Sinks.MTarget` | MTarget SMS |
 | `fbognini.Notifications.Sources.AppSettings` | Static profiles bound from `IConfiguration` |
-| `fbognini.Notifications.Sources.SqlServer` | Dynamic profiles, templates and queue on SQL Server |
+| `fbognini.Notifications.Sources.SqlServer` | Dynamic profiles on SQL Server |
 
 You need the core, at least one sink, and at least one source. A composition missing any of these fails
 when the host starts, not on the first send.
@@ -96,8 +96,7 @@ builder.Services.AddNotifications()
     .FromAppSettings(builder.Configuration);
 ```
 
-`IEmailSender` gives you the full channel: cc, bcc, attachments, HTML, and `ScheduleAsync` for deferred
-delivery when a source provides a queue.
+`IEmailSender` gives you the full channel: cc, bcc, attachments and HTML.
 
 ### Telegram — channel `telegram`
 
@@ -332,8 +331,6 @@ Implement whichever capabilities you can serve and register only those:
 |---|---|---|
 | Static profiles | `IStaticConfigurationStore` | `AddStaticConfigurationStore(...)` |
 | Dynamic profiles | `INotificationConfigurationSource` | `AddDynamicConfigurationSource(...)` |
-| Templates | `ITemplateStore` | `AddTemplateStore(...)` |
-| Queue | `INotificationQueue` | `AddQueue(...)` |
 | Recipient lookup | `IRecipientDirectory` | register in `Services` |
 
 `INotificationConfigurationSource` returns the stored payload as a string and never deserialises it —
@@ -370,9 +367,9 @@ The old ids stop at 2.0.0 and will be unlisted once 3.0 is stable. The sink pack
 
 Data migration: apply `schema.sql`, then
 [`migrate-2.x-to-3.0.sql`](src/fbognini.Notifications.Sources.SqlServer/migrate-2.x-to-3.0.sql). It moves
-profiles, templates and pending queue rows without dropping anything, so you can verify before cleaning
-up. Read the header first — two things need your attention: pending queued emails have no profile in 2.x
-so you must choose one, and `SmsConfigs.ServiceId` has no 3.0 equivalent.
+profiles without dropping anything, so you can verify before cleaning up. Read the header first — three
+things have no 3.0 equivalent and are left behind: `EmailTemplates`, pending `QueueEmails` rows (drain
+them with 2.x before switching over) and `SmsConfigs.ServiceId`.
 
 ## Licence
 

@@ -1,6 +1,5 @@
 using fbognini.Notifications.Builder;
 using fbognini.Notifications.Configuration;
-using fbognini.Notifications.Queue;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace fbognini.Notifications.Sinks.Email;
@@ -22,8 +21,7 @@ public static class EmailBuilderExtensions
 
         builder.Services.AddKeyedSingleton<IEmailSender>(options.Name, (sp, _) => new EmailSender(
             sp.GetRequiredService<INotificationConfigurationProvider>(),
-            options,
-            sp.GetService<INotificationQueue>()));
+            options));
 
         if (options.Name == EmailChannel.DefaultSinkName)
         {

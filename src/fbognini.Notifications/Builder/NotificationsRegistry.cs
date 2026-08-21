@@ -14,10 +14,6 @@ public sealed class NotificationsRegistry
 
     public bool HasDynamicSource { get; private set; }
 
-    public bool HasTemplateStore { get; private set; }
-
-    public bool HasQueue { get; private set; }
-
     public void AddSink(string channel, string name, Type? identityType = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(channel);
@@ -35,10 +31,6 @@ public sealed class NotificationsRegistry
     public void MarkStaticStore() => HasStaticStore = true;
 
     public void MarkDynamicSource() => HasDynamicSource = true;
-
-    public void MarkTemplateStore() => HasTemplateStore = true;
-
-    public void MarkQueue() => HasQueue = true;
 }
 
 public sealed record SinkRegistration(string Channel, string Name, Type? IdentityType);

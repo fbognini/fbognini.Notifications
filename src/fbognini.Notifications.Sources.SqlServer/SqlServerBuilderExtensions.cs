@@ -5,9 +5,8 @@ namespace fbognini.Notifications.Sources.SqlServer;
 public static class SqlServerBuilderExtensions
 {
     /// <summary>
-    /// Registers the dynamic layer plus the template and queue capabilities. No schema is created here:
-    /// the DDL lives in schema.sql and is applied by whoever owns the database, not as a side effect of
-    /// reading a configuration.
+    /// Registers the dynamic configuration layer.
+    /// No schema is created here: the DDL lives in schema.sql and is applied by whoever owns the database, not as a side effect of reading a configuration.
     /// </summary>
     public static NotificationsBuilder FromSqlServer(
         this NotificationsBuilder builder,
@@ -21,8 +20,6 @@ public static class SqlServerBuilderExtensions
         options.Validate();
 
         return builder
-            .AddDynamicConfigurationSource(_ => new SqlServerConfigurationSource(options))
-            .AddTemplateStore(_ => new SqlServerTemplateStore(options))
-            .AddQueue(_ => new SqlServerNotificationQueue(options));
+            .AddDynamicConfigurationSource(_ => new SqlServerConfigurationSource(options));
     }
 }

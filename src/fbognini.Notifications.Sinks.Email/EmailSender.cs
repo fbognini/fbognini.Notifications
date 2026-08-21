@@ -1,6 +1,4 @@
-using System.Text.Json;
 using fbognini.Notifications.Configuration;
-using fbognini.Notifications.Queue;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -9,8 +7,7 @@ namespace fbognini.Notifications.Sinks.Email;
 
 internal sealed class EmailSender(
     INotificationConfigurationProvider configuration,
-    EmailSinkOptions options,
-    INotificationQueue? queue = null) : IEmailSender
+    EmailSinkOptions options) : IEmailSender
 {
     public async Task SendAsync(EmailMessage message, CancellationToken cancellationToken = default)
     {
@@ -48,32 +45,6 @@ internal sealed class EmailSender(
 
         await smtp.SendAsync(mime, cancellationToken).ConfigureAwait(false);
         await smtp.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
-    }
-
-    public Task<int> ScheduleAsync(
-        IReadOnlyList<EmailMessage> messages,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(messages);
-
-        if (queue is null)
-        {
-            throw new InvalidOperationException(
-                "No notification queue is registered. Add a source that provides one, such as FromSqlServer(...).");
-        }
-
-        var queued = messages
-            .Select(m => new QueuedNotification
-            {
-                Channel = EmailChannel.Name,
-                ConfigurationId = m.ConfigurationId,
-                Address = m.To ?? string.Empty,
-                Payload = JsonSerializer.Serialize(m),
-                CreatedAt = DateTimeOffset.UtcNow,
-            })
-            .ToArray();
-
-        return queue.EnqueueAsync(queued, cancellationToken);
     }
 
     internal static MimeMessage? BuildMessage(EmailMessage message, EmailIdentity identity)

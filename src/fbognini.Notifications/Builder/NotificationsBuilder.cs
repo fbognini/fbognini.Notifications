@@ -1,7 +1,5 @@
 using fbognini.Notifications.Abstractions;
 using fbognini.Notifications.Configuration;
-using fbognini.Notifications.Queue;
-using fbognini.Notifications.Templates;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace fbognini.Notifications.Builder;
@@ -53,26 +51,6 @@ public sealed class NotificationsBuilder(IServiceCollection services, Notificati
         ArgumentNullException.ThrowIfNull(factory);
 
         Registry.MarkDynamicSource();
-        Services.AddSingleton(factory);
-
-        return this;
-    }
-
-    public NotificationsBuilder AddTemplateStore(Func<IServiceProvider, ITemplateStore> factory)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-
-        Registry.MarkTemplateStore();
-        Services.AddSingleton(factory);
-
-        return this;
-    }
-
-    public NotificationsBuilder AddQueue(Func<IServiceProvider, INotificationQueue> factory)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-
-        Registry.MarkQueue();
         Services.AddSingleton(factory);
 
         return this;

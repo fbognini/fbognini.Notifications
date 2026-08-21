@@ -17,33 +17,4 @@ CREATE TABLE [notification].[Profiles]
 );
 GO
 
-IF OBJECT_ID('[notification].[Templates]') IS NULL
-CREATE TABLE [notification].[Templates]
-(
-    [Id]      NVARCHAR(128) NOT NULL CONSTRAINT [PK_Templates] PRIMARY KEY,
-    [Name]    NVARCHAR(256) NOT NULL,
-    [Subject] NVARCHAR(512) NOT NULL,
-    [Body]    NVARCHAR(MAX) NOT NULL
-);
-GO
-
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Templates_Name')
-    CREATE UNIQUE INDEX [IX_Templates_Name] ON [notification].[Templates] ([Name]);
-GO
-
-IF OBJECT_ID('[notification].[Queue]') IS NULL
-CREATE TABLE [notification].[Queue]
-(
-    [Id]              BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT [PK_Queue] PRIMARY KEY,
-    [Channel]         NVARCHAR(64)   NOT NULL,
-    [ConfigurationId] NVARCHAR(128)  NOT NULL,
-    [Address]         NVARCHAR(512)  NOT NULL,
-    [Payload]         NVARCHAR(MAX)  NOT NULL,
-    [CreatedAt]       DATETIMEOFFSET NOT NULL,
-    [Processing]      BIT            NOT NULL CONSTRAINT [DF_Queue_Processing] DEFAULT 0,
-    [ErrorRetry]      INT            NOT NULL CONSTRAINT [DF_Queue_ErrorRetry] DEFAULT 0,
-    [ErrorMessage]    NVARCHAR(MAX)  NULL
-);
-GO
-
 -- Coming from 2.x? Apply this file first, then migrate-2.x-to-3.0.sql.

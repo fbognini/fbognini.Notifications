@@ -69,6 +69,4 @@ public sealed class EmailMessage
 public interface IEmailSender
 {
     Task SendAsync(EmailMessage message, CancellationToken cancellationToken = default);
-
-    Task<int> ScheduleAsync(IReadOnlyList<EmailMessage> messages, CancellationToken cancellationToken = default);
 }
