@@ -1,18 +1,19 @@
 using fbognini.Notifications;
 using fbognini.Notifications.Sinks.Email;
-using fbognini.Notifications.Source.AppSettings;
+using fbognini.Notifications.Sinks.Telegram;
+using fbognini.Notifications.Sources.AppSettings;
 using fbognini.Notifications.WorkerSample;
-using Microsoft.Extensions.Configuration;
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((ctx, services) =>
-    {
-        services.AddHostedService<Worker>();
+var builder = Host.CreateApplicationBuilder(args);
 
-        services.AddNotifications()
-            .AddEmailService("SUPPORT")
-            .FromAppSettings(ctx.Configuration);
-    })
-    .Build();
+builder.Services.AddHostedService<Worker>();
 
-host.Run();
+builder.Services
+    .AddNotifications(
+        configuration => configuration.DynamicCacheTtl = TimeSpan.FromMinutes(2),
+        dispatcher => dispatcher.MaxAttempts = 3)
+    .AddEmail()
+    .AddTelegram(o => o.ParseMode = TelegramParseMode.Html)
+    .FromAppSettings(builder.Configuration);
+
+await builder.Build().RunAsync();

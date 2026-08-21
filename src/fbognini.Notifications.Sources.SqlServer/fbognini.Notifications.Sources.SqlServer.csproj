@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>fbognini.Notifications.Sources.SqlServer</PackageId>
+    <Description>SQL Server source for fbognini.Notifications: dynamic profiles, templates and queue.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="*.sql" Pack="true" PackagePath="sql\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\fbognini.Notifications\fbognini.Notifications.csproj" />
+  </ItemGroup>
+
+</Project>

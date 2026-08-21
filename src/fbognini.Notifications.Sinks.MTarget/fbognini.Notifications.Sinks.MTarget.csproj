@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>fbognini.Notifications.Sinks.Email</PackageId>
-    <Description>SMTP sink for fbognini.Notifications, built on MailKit.</Description>
+    <PackageId>fbognini.Notifications.Sinks.MTarget</PackageId>
+    <Description>MTarget SMS sink for fbognini.Notifications.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.17.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="$(ExtensionsVersion)" />
   </ItemGroup>
 
   <ItemGroup>
