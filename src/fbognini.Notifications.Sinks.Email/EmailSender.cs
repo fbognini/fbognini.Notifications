@@ -51,13 +51,20 @@ internal sealed class EmailSender(
     {
         var mime = new MimeMessage();
 
-        mime.From.Add(string.IsNullOrWhiteSpace(identity.FromName)
-            ? MailboxAddress.Parse(identity.FromEmail)
-            : new MailboxAddress(identity.FromName, identity.FromEmail));
-
-        if (!string.IsNullOrWhiteSpace(identity.ReplyToEmail))
+        // FromEmail may already carry a display name ("Example <support@example.com>"), so only its address is kept when a name is set.
+        var from = MailboxAddress.Parse(identity.FromEmail);
+        var fromName = FirstNonBlank(message.FromName, identity.FromName);
+        if (fromName is not null)
         {
-            mime.ReplyTo.Add(MailboxAddress.Parse(identity.ReplyToEmail));
+            from = new MailboxAddress(fromName, from.Address);
+        }
+
+        mime.From.Add(from);
+
+        var replyTo = FirstNonBlank(message.ReplyToEmail, identity.ReplyToEmail);
+        if (replyTo is not null)
+        {
+            mime.ReplyTo.Add(MailboxAddress.Parse(replyTo));
         }
 
         AddAddresses(mime.To, message.To);
@@ -92,6 +99,16 @@ internal sealed class EmailSender(
         mime.Body = body.ToMessageBody();
 
         return mime;
+    }
+
+    private static string? FirstNonBlank(string? first, string? second)
+    {
+        if (!string.IsNullOrWhiteSpace(first))
+        {
+            return first.Trim();
+        }
+
+        return string.IsNullOrWhiteSpace(second) ? null : second.Trim();
     }
 
     private static void AddAddresses(InternetAddressList list, string? raw)

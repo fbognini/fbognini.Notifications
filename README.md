@@ -98,6 +98,21 @@ builder.Services.AddNotifications()
 
 `IEmailSender` gives you the full channel: cc, bcc, attachments and HTML.
 
+`EmailMessage.FromName` and `EmailMessage.ReplyToEmail` override the profile for one message, for mail sent on behalf of someone else through a shared account. The From address always stays the profile's, so SPF and DKIM keep matching.
+
+```csharp
+await email.SendAsync(new EmailMessage
+{
+    ConfigurationId = "NOTIFICATIONS",
+    FromName = "Acme Store",
+    ReplyToEmail = "orders@acme.example",
+    To = "customer@example.com",
+    Subject = "Acme Store received your order",
+    Body = "<p>Thanks!</p>",
+    IsHtml = true,
+}, cancellationToken);
+```
+
 ### Telegram — channel `telegram`
 
 ```json

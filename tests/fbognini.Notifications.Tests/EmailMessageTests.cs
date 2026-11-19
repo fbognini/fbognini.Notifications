@@ -43,6 +43,82 @@ public class EmailMessageTests
         Assert.Equal("Example Support", mime!.From.Mailboxes.Single().Name);
     }
 
+    [Fact]
+    public void A_from_name_on_the_message_wins_over_the_profile_and_keeps_its_address()
+    {
+        var identity = Identity();
+        identity.FromName = "Example Support";
+
+        var mime = EmailSender.BuildMessage(new EmailMessage
+        {
+            ConfigurationId = "SUPPORT",
+            FromName = "Acme Store",
+            To = "a@b.c",
+            Subject = "s",
+            Body = "b",
+        }, identity);
+
+        var from = mime!.From.Mailboxes.Single();
+        Assert.Equal("Acme Store", from.Name);
+        Assert.Equal("support@example.com", from.Address);
+    }
+
+    [Fact]
+    public void A_from_name_on_the_message_replaces_the_name_written_inside_from_email()
+    {
+        var identity = Identity();
+        identity.FromEmail = "Example <support@example.com>";
+
+        var withName = EmailSender.BuildMessage(new EmailMessage
+        {
+            ConfigurationId = "SUPPORT",
+            FromName = "Acme Store",
+            To = "a@b.c",
+            Subject = "s",
+            Body = "b",
+        }, identity);
+        var withoutName = EmailSender.BuildMessage(Message(), identity);
+
+        Assert.Equal("Acme Store", withName!.From.Mailboxes.Single().Name);
+        Assert.Equal("support@example.com", withName.From.Mailboxes.Single().Address);
+        Assert.Equal("Example", withoutName!.From.Mailboxes.Single().Name);
+    }
+
+    [Fact]
+    public void A_reply_to_on_the_message_wins_over_the_profile()
+    {
+        var mime = EmailSender.BuildMessage(new EmailMessage
+        {
+            ConfigurationId = "SUPPORT",
+            ReplyToEmail = "shop@acme.example",
+            To = "a@b.c",
+            Subject = "s",
+            Body = "b",
+        }, Identity());
+
+        Assert.Equal("shop@acme.example", mime!.ReplyTo.Mailboxes.Single().Address);
+    }
+
+    [Fact]
+    public void Blank_overrides_fall_back_to_the_profile()
+    {
+        var identity = Identity();
+        identity.FromName = "Example Support";
+
+        var mime = EmailSender.BuildMessage(new EmailMessage
+        {
+            ConfigurationId = "SUPPORT",
+            FromName = " ",
+            ReplyToEmail = "",
+            To = "a@b.c",
+            Subject = "s",
+            Body = "b",
+        }, identity);
+
+        Assert.Equal("Example Support", mime!.From.Mailboxes.Single().Name);
+        Assert.Equal("help@example.com", mime.ReplyTo.Mailboxes.Single().Address);
+    }
+
     [Theory]
     [InlineData("a@b.c;d@e.f", 2)]
     [InlineData("a@b.c,d@e.f", 2)]

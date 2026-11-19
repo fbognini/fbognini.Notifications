@@ -47,6 +47,16 @@ public sealed class EmailMessage
 {
     public required string ConfigurationId { get; init; }
 
+    /// <summary>
+    /// Overrides the profile's FromName for this message only. The address stays the profile's, so SPF and DKIM keep matching the SMTP account.
+    /// </summary>
+    public string? FromName { get; init; }
+
+    /// <summary>
+    /// Overrides the profile's ReplyToEmail for this message only.
+    /// </summary>
+    public string? ReplyToEmail { get; init; }
+
     public string? To { get; init; }
 
     public string? Cc { get; init; }
